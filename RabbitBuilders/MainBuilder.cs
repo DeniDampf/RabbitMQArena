@@ -7,9 +7,9 @@ namespace RabbitBuilders
 
     public class MainBuilder
     {
-QueueBuilder _qBuilder;
-IConnection _conn;
-IModel _channel;
+        QueueBuilder _qBuilder;
+        IConnection _conn;
+        IModel _channel;
 
         public MainBuilder()
         {
@@ -24,8 +24,7 @@ IModel _channel;
             factory.Password = "guest";
             factory.VirtualHost = "/";
             factory.HostName = "localhost";
-            //  factory.Port = 5672;
-        
+                    
             _conn = factory.CreateConnection();
 
             _channel = _conn.CreateModel();
