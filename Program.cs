@@ -1,6 +1,7 @@
 ﻿using System;
 using RabbitMQ.Client;
 using System.Text;
+using RabbitBuilders;
 
 namespace RabbitMQArena
 {
@@ -29,7 +30,13 @@ namespace RabbitMQArena
                                  autoDelete: false,
                                  arguments: null);
 
-Console.WriteLine("didi it");
+
+
+            Console.WriteLine("didi it");
+
+            QueueBuilder qBuilder = new QueueBuilder();
+
+            qBuilder.doWork(channel);
         }
     }
 }
