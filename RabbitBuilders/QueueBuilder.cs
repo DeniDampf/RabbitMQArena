@@ -14,17 +14,15 @@ namespace RabbitBuilders
 
         public void doWork(IModel channel)
         {
-                 channel.QueueDeclare(queue: "hello1",
+            for(int i =0; i< 10; i++)
+            {
+                                 channel.QueueDeclare(queue: "WorkingQueue_" + i.ToString().PadLeft(2,'0') ,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
 
-                channel.QueueDeclare(queue: "hello2",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
+            }
         }
     }
 }

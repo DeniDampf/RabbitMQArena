@@ -11,10 +11,17 @@ namespace RabbitBuilders
         IConnection _conn;
         IModel _channel;
 
+        public IModel Channel{
+            get{
+                return _channel;
+            }
+        }
+
         public MainBuilder()
         {
             init();
         }
+
 
         public void init()
         {
