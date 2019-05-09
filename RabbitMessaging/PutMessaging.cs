@@ -5,11 +5,11 @@ using System.Text;
 namespace RabbitMessaging
 {
 
-    public class Messaging
+    public class PutMessaging
     {
         public void putMessage(IModel channel,string qeueuName)
         {
-            var message = getMessage(qeueuName);
+            var message = createMessage(qeueuName);
             var body = Encoding.UTF8.GetBytes(message);
 
             var properties = channel.CreateBasicProperties();
@@ -21,7 +21,7 @@ namespace RabbitMessaging
                                 body: body);
         }
 
-        private string getMessage(string messagePartFront)
+        private string createMessage(string messagePartFront)
         {
             return messagePartFront + "__" + System.DateTime.Now.ToString();
         }

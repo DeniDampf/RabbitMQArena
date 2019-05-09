@@ -18,18 +18,20 @@ namespace RabbitMQArena
             {
                 putMessages("WorkingQueue_" + i.ToString().PadLeft(2,'0'));                
             } 
+
+            GetMessaging getMessages = new GetMessaging();
+            getMessages.GetMessage(_mBuilder.Channel,"WorkingQueue_03");
             
+            Console.WriteLine("i am really finished");
            
         }
         public static void putMessages(string queueName)
         {
-            Messaging messageService = new Messaging();
+            PutMessaging messageService = new PutMessaging();
             for(int i = 0; i < 10; i++)
             {
                 messageService.putMessage(_mBuilder.Channel,queueName);
-            } 
-
-            
+            }             
         }
     }
 }
