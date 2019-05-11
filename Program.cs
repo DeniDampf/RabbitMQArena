@@ -12,7 +12,7 @@ namespace RabbitMQArena
         static void Main(string[] args)
         {
             _mBuilder = new MainBuilder();
-            _mBuilder.doWork();
+            _mBuilder.doWork(); 
 
             for(int i = 0; i < 10; i++)
             {
