@@ -8,7 +8,7 @@ using System.Threading;
 namespace RabbitMessaging
 {   
     public class GetMessaging
-    {
+    { 
         public void GetMessage(IModel channel,string qeueuName)
         {
             var consumer = new EventingBasicConsumer(channel);
