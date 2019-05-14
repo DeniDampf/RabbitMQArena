@@ -28,7 +28,7 @@ namespace RabbitMQArena
         public static void putMessages(string queueName)
         {
             PutMessaging messageService = new PutMessaging();
-            for(int i = 0; i < 10; i++)
+            for(int i = 0; i < 2; i++)
             {
                 messageService.putMessage(_mBuilder.Channel,queueName);
             }             
