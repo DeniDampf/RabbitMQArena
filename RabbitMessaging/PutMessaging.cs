@@ -1,6 +1,7 @@
 using System;
 using RabbitMQ.Client;
 using System.Text;
+using Models;
 
 namespace RabbitMessaging
 {
@@ -23,7 +24,18 @@ namespace RabbitMessaging
 
         private string createMessage(string messagePartFront)
         {
-            return messagePartFront + "__" + System.DateTime.Now.ToString();
+            // return messagePartFront + "__" + System.DateTime.Now.ToString();
+
+            JsonMessage message = new JsonMessage();
+message.x = 1;
+message.y = 2;
+
+message.Operation = "add";
+message.Id = System.DateTime.Now.Millisecond;
+
+return message.ToJson();
+
+
         }
 
 
