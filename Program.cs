@@ -6,32 +6,48 @@ using RabbitMessaging;
 
 namespace RabbitMQArena
 {
-    class Program
+  class Program
+  {
+    static MainBuilder _mBuilder;
+    static void Main(string[] args)
     {
-        static MainBuilder _mBuilder;
-        static void Main(string[] args)
-        {
-            _mBuilder = new MainBuilder();
-            _mBuilder.doWork(); 
+      try
+      {
 
-            for(int i = 0; i < 10; i++)
-            {
-                putMessages("WorkingQueue_" + i.ToString().PadLeft(2,'0'));                
-            } 
 
-            GetMessaging getMessages = new GetMessaging();
-            getMessages.GetMessage(_mBuilder.Channel,"WorkingQueue_03");
-            
-            Console.WriteLine("i am really finished");
-           
-        }
-        public static void putMessages(string queueName)
+        _mBuilder = new MainBuilder();
+        _mBuilder.doWork();
+
+        for (int i = 0; i < 10; i++)
         {
-            PutMessaging messageService = new PutMessaging();
-            for(int i = 0; i < 2; i++)
-            {
-                messageService.putMessage(_mBuilder.Channel,queueName);
-            }             
+          putMessages("WorkingQueue_" + i.ToString().PadLeft(2, '0'));
         }
+
+        GetMessaging getMessages = new GetMessaging();
+        getMessages.GetMessage(_mBuilder.Channel, "WorkingQueue_03");
+
+        Console.WriteLine("i am really finished");
+
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine("Fehler: " + ex.Message);
+      }
+      finally
+      {
+        Console.WriteLine("fertig");
+        Console.ReadLine();
+      }
+
     }
+
+    public static void putMessages(string queueName)
+    {
+      PutMessaging messageService = new PutMessaging();
+      for (int i = 0; i < 2; i++)
+      {
+        messageService.putMessage(_mBuilder.Channel, queueName);
+      }
+    }
+  }
 }
