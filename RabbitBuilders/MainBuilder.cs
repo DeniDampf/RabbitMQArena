@@ -8,6 +8,7 @@ namespace RabbitBuilders
     public class MainBuilder
     {
         QueueBuilder _qBuilder;
+        ExchangeBuilder _exBuilder;
         IConnection _conn;
         IModel _channel;
 
@@ -36,11 +37,13 @@ namespace RabbitBuilders
 
             _channel = _conn.CreateModel();
             _qBuilder = new QueueBuilder();
+            _exBuilder = new ExchangeBuilder();
         }
 
         public void doWork()
         {
             _qBuilder.doWork(_channel);
+            _exBuilder.doWork(_channel);
         }
     }
 }
