@@ -23,6 +23,8 @@ namespace RabbitMQArena
           putMessages("WorkingQueue_" + i.ToString().PadLeft(2, '0'));
         }
 
+        putExchangeMessages("logs");
+
         GetMessaging getMessages = new GetMessaging();
         getMessages.GetMessage(_mBuilder.Channel, "WorkingQueue_03");
 
@@ -48,6 +50,14 @@ namespace RabbitMQArena
       {
         messageService.putMessage(_mBuilder.Channel, queueName);
       }
+    }
+
+    public static void putExchangeMessages(string exchangeName)
+    {
+      PutMessaging messageService = new PutMessaging();
+
+      messageService.putExchangeMessage(_mBuilder.Channel, exchangeName); 
+      Console.WriteLine("Published to exchange");     
     }
   }
 }

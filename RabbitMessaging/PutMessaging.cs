@@ -22,10 +22,22 @@ namespace RabbitMessaging
                                 body: body);
         }
 
+        public void putExchangeMessage(IModel channel,string exchangeName)
+        {
+            var message = createMessage(exchangeName);
+            var body = Encoding.UTF8.GetBytes(message);
+
+            var properties = channel.CreateBasicProperties();
+            properties.Persistent = true;
+
+            channel.BasicPublish(exchange: exchangeName,
+                                routingKey: "",
+                                basicProperties: null,
+                                body: body);
+        }
+
         private string createMessage(string messagePartFront)
         {
-            // return messagePartFront + "__" + System.DateTime.Now.ToString();
-
             JsonMessage message = new JsonMessage();
             message.x = 1;
             message.y = 2;
@@ -34,10 +46,6 @@ namespace RabbitMessaging
             message.Id = System.DateTime.Now.Millisecond;
 
             return message.ToJson();
-
-
         }
-
-
     }
 }
