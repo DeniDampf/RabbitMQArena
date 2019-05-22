@@ -15,7 +15,7 @@ namespace RabbitBuilders
         {
             for(int i =0; i< 1; i++)
             {
-                channel.ExchangeDeclare("logs","fanout"); 
+                channel.ExchangeDeclare("logs7even","fanout"); 
                 Console.WriteLine("Created Exchange");
             }
         }
