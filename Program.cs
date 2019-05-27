@@ -46,6 +46,12 @@ namespace RabbitMQArena
         Thread.Sleep(500);
         putExchangeMessages("logs7even");
 
+        for(int i = 0; i < 100 ;i ++)
+        {
+          putExchangeMessages("logs7even");
+          Thread.Sleep(500);
+        }
+
       }
       catch (Exception ex)
       {
@@ -100,7 +106,7 @@ namespace RabbitMQArena
 
 
       while(true)
-      {
+      {        
         Console.WriteLine("huhuhuhu");
         Thread.Sleep(1000);
       }
