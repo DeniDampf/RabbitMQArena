@@ -28,27 +28,37 @@ namespace RabbitMQArena
 
 
         Console.WriteLine("open a thread to listen to exchange");
-        ThreadPool.QueueUserWorkItem(listenToExchange,_mBuilder.Channel);
+                
+        //ThreadPool.QueueUserWorkItem(listenToExchange,_mBuilder.Channel);
 
-        putExchangeMessages("logs7even");
+        Consumer consumer1 = new Consumer();
+        consumer1.Subscribe("logs7even0","Consumer 1","..1..");
+
+        //Consumer consumer2 = new Consumer();
+        //consumer2.Subscribe("logs7even","Consumer 2","..2..");
+        consumer1.Subscribe("logs7even1","Consumer 2","..2..");
+
 
         GetMessaging getMessages = new GetMessaging();
         getMessages.GetMessage(_mBuilder.Channel, "WorkingQueue_03");
 
         Console.WriteLine("i am really finished");
 
-        putExchangeMessages("logs7even");
+        putExchangeMessages("logs7even0");
+
+        
 
         Thread.Sleep(500);
-        putExchangeMessages("logs7even");
+        putExchangeMessages("logs7even0");
         Thread.Sleep(500);
-        putExchangeMessages("logs7even");
+        putExchangeMessages("logs7even0");
         Thread.Sleep(500);
-        putExchangeMessages("logs7even");
+        putExchangeMessages("logs7even0");
 
-        for(int i = 0; i < 100 ;i ++)
+        for(int i = 0; i < 50 ;i ++)
         {
-          putExchangeMessages("logs7even");
+          putExchangeMessages("logs7even0");
+          putExchangeMessages("logs7even1","Sending TOO SECOND");
           Thread.Sleep(500);
         }
 
@@ -79,7 +89,15 @@ namespace RabbitMQArena
       PutMessaging messageService = new PutMessaging();
 
       messageService.putExchangeMessage(_mBuilder.Channel, exchangeName); 
-      Console.WriteLine("Published to exchange");     
+      Console.WriteLine("Published to exchange: " +exchangeName);     
+    }
+
+    public static void putExchangeMessages(string exchangeName,string message)
+    {
+      PutMessaging messageService = new PutMessaging();
+
+      messageService.putExchangeMessage(_mBuilder.Channel, exchangeName,message); 
+      Console.WriteLine("Published to exchange: " +exchangeName);     
     }
 
     static void listenToExchange(Object stateInfo)
@@ -96,7 +114,7 @@ namespace RabbitMQArena
       {
           var body = ea.Body;
           var message = Encoding.UTF8.GetString(body);
-          Console.WriteLine(" [x] {0}", message);
+          Console.WriteLine("You are cool [x] {0}", message);
       };
       channel.BasicConsume(queue: queueName,
                             autoAck: true,
@@ -108,7 +126,7 @@ namespace RabbitMQArena
       while(true)
       {        
         Console.WriteLine("huhuhuhu");
-        Thread.Sleep(1000);
+        Thread.Sleep(500);
       }
     }
   }

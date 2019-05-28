@@ -36,6 +36,19 @@ namespace RabbitMessaging
                                 body: body);
         }
 
+        public void putExchangeMessage(IModel channel,string exchangeName,string message)
+        {           
+            var body = Encoding.UTF8.GetBytes(message);
+
+            var properties = channel.CreateBasicProperties();
+            properties.Persistent = true;
+
+            channel.BasicPublish(exchange: exchangeName,
+                                routingKey: "",
+                                basicProperties: null,
+                                body: body);
+        }
+
         private string createMessage(string messagePartFront)
         {
             JsonMessage message = new JsonMessage();

@@ -13,9 +13,9 @@ namespace RabbitBuilders
 
         public void doWork(IModel channel)
         {
-            for(int i =0; i< 1; i++)
+            for(int i =0; i< 2; i++)
             {
-                channel.ExchangeDeclare("logs7even","fanout"); 
+                channel.ExchangeDeclare("logs7even" + i.ToString(),"fanout"); 
                 Console.WriteLine("Created Exchange");
             }
         }
