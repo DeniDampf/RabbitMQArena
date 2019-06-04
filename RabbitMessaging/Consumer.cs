@@ -24,8 +24,11 @@ namespace RabbitMessaging
             factory.Password = "guest";
             factory.VirtualHost = "/";
             factory.HostName = "localhost";
+            
                     
-            _conn = factory.CreateConnection();
+            _conn = factory.CreateConnection("Consumer Subscription");
+
+    
 
             _channel = _conn.CreateModel();
 
