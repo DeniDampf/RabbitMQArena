@@ -16,13 +16,25 @@ namespace RabbitBuilders
         {
             for(int i =0; i< 10; i++)
             {
-                                 channel.QueueDeclare(queue: "WorkingQueue_" + i.ToString().PadLeft(2,'0') ,
+                createQueue(channel, "WorkingQueue_" + i.ToString().PadLeft(2,'0'));                                                              
+
+            }
+        }
+
+        public void BindToExchange(IModel channel, string exchangeName,string QueueName)
+        {
+            channel.QueueBind(queue: QueueName  ,
+                                 exchange: exchangeName,
+                                 routingKey: "");         
+        }
+
+        public void createQueue(IModel channel, string queueName)
+        {
+                                 channel.QueueDeclare(queue: queueName ,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
-
-            }
         }
     }
 }

@@ -33,7 +33,7 @@ namespace RabbitBuilders
             factory.VirtualHost = "/";
             factory.HostName = "localhost";
                     
-            _conn = factory.CreateConnection();
+            _conn = factory.CreateConnection("MainBuilderConnection");
 
             _channel = _conn.CreateModel();
             _qBuilder = new QueueBuilder();
