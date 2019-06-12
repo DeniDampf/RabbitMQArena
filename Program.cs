@@ -32,11 +32,24 @@ namespace RabbitMQArena
         qBuilder.BindToExchange(_mBuilder.Channel,"ChannelTimeoutChecker_EX", "ChannelTimeoutListener");
         
         
-        ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
         
-        ConnectionChannelChecking();
+        for (int i = 0 ;i < 4000;i++)
+        {
+          ConnectionChannelChecking(i.ToString());
+          if(i % 20 == 0)
+          {
+            ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+          }
+        }
+        
+        
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
 
-        Thread.Sleep(20000);
+        Thread.Sleep(60000);
 
         Console.WriteLine("end thread");
         _stopThread = true;
@@ -101,19 +114,43 @@ namespace RabbitMQArena
 
     public static void SendToExchange(Object stateInfo)
     {
+      long counter = 0 ;
       while(!_stopThread)
       {
-        putExchangeMessages("ChannelTimeoutChecker_EX");
-        Thread.Sleep(2000);       
+        counter++;
+        putExchangeMessages("ChannelTimeoutChecker_EX",counter.ToString());
+        Thread.Sleep(10);       
 
       }
 
       Console.WriteLine("SendToExchangeThread stopped");
     }
 
-    public static void ConnectionChannelChecking()
+    public static void ConnectionChannelChecking(string idname)
     {
       Console.WriteLine("Lets check now");
+
+      IModel channel = null;
+      if(idname.Equals("0") || idname.Equals("1"))
+      {
+        channel =_mBuilder.Channel;   
+      }
+      else
+      {
+        channel =_mBuilder.createNewChannel(idname);   
+      }
+
+
+      var consumer = new EventingBasicConsumer(channel);
+      consumer.Received += (model, ea) =>
+      {
+          var body = ea.Body;
+          var message = Encoding.UTF8.GetString(body);
+          Console.WriteLine($"{idname}: {message}");
+      };
+      channel.BasicConsume(queue: "ChannelTimeoutListener",
+                            autoAck: true,
+                            consumer: consumer);
     }
 
     public static void putMessages(string queueName)
