@@ -23,6 +23,21 @@ namespace RabbitBuilders
             init();
         }
 
+        public IModel createNewChannel(string name)
+        {
+            ConnectionFactory factory = new ConnectionFactory();
+            
+            factory.UserName = "guest";
+            factory.Password = "guest";
+            factory.VirtualHost = "/";
+            factory.HostName = "localhost";
+                    
+            IConnection conn = factory.CreateConnection("MainBuilder: " + name);
+            IModel channel = conn.CreateModel();
+
+            return Channel;
+        }
+
 
         public void init()
         {

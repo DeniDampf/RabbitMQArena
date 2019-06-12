@@ -26,29 +26,55 @@ namespace RabbitMQArena
         //Checking Binding to an Exchange - Surviving Channel
         ExchangeBuilder exBuilder = new ExchangeBuilder() ;
         QueueBuilder qBuilder = new QueueBuilder();
+        RPCBuilder rPCBuilder = new RPCBuilder();
 
         exBuilder.createExchange(_mBuilder.Channel,"ChannelTimeoutChecker_EX");
         qBuilder.createQueue(_mBuilder.Channel,"ChannelTimeoutListener");
+        qBuilder.createQueue(_mBuilder.Channel,"rpcReplyQueue");
+
+
         qBuilder.BindToExchange(_mBuilder.Channel,"ChannelTimeoutChecker_EX", "ChannelTimeoutListener");
+        rPCBuilder.createRPC(_mBuilder.Channel,"rpcQueue");
         
         
-        ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
-        
-        ConnectionChannelChecking();
-
-        Thread.Sleep(20000);
-
-        Console.WriteLine("end thread");
-        _stopThread = true;
-        Thread.Sleep(2000);
-        Console.WriteLine("did it ended?");
-
-
-
-        // for (int i = 0; i < 10; i++)
+        // for (int i = 0 ;i < 100;i++)
         // {
-        //   putMessages("WorkingQueue_" + i.ToString().PadLeft(2, '0'));
+        //   ConnectionChannelChecking(i.ToString());
+        //   if(i % 20 == 0)
+        //   {
+        //     ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+        //   }
         // }
+        
+        
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+        // ThreadPool.QueueUserWorkItem(SendToExchange,_mBuilder.Channel);
+
+        // Thread.Sleep(60000);
+
+        // Console.WriteLine("end thread");
+        // _stopThread = true;
+        // Thread.Sleep(2000);
+        // Console.WriteLine("did it ended?");
+
+        // RPC Call
+        var rpcClient = new RpcClient();
+        rpcClient.consumeReplyQueue(_mBuilder.Channel,"rpcReplyQueue");
+        string result = rpcClient.Call("1","rpcQueue");
+        Console.WriteLine("RPC Result: " + result);
+
+
+        //Ende RPC
+
+
+
+         for (int i = 0; i < 10; i++)
+         {
+           putMessages("WorkingQueue_" + i.ToString().PadLeft(2, '0'));
+         }
 
 
         // Console.WriteLine("open a thread to listen to exchange");
@@ -101,19 +127,43 @@ namespace RabbitMQArena
 
     public static void SendToExchange(Object stateInfo)
     {
+      long counter = 0 ;
       while(!_stopThread)
       {
-        putExchangeMessages("ChannelTimeoutChecker_EX");
-        Thread.Sleep(2000);       
+        counter++;
+        putExchangeMessages("ChannelTimeoutChecker_EX",counter.ToString());
+        Thread.Sleep(10);       
 
       }
 
       Console.WriteLine("SendToExchangeThread stopped");
     }
 
-    public static void ConnectionChannelChecking()
+    public static void ConnectionChannelChecking(string idname)
     {
       Console.WriteLine("Lets check now");
+
+      IModel channel = null;
+      if(idname.Equals("0") || idname.Equals("1"))
+      {
+        channel =_mBuilder.Channel;   
+      }
+      else
+      {
+        channel =_mBuilder.createNewChannel(idname);   
+      }
+
+
+      var consumer = new EventingBasicConsumer(channel);
+      consumer.Received += (model, ea) =>
+      {
+          var body = ea.Body;
+          var message = Encoding.UTF8.GetString(body);
+          Console.WriteLine($"{idname}: {message}");
+      };
+      channel.BasicConsume(queue: "ChannelTimeoutListener",
+                            autoAck: true,
+                            consumer: consumer);
     }
 
     public static void putMessages(string queueName)
