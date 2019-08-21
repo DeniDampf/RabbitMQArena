@@ -217,7 +217,7 @@ namespace RabbitMQArena
       while(true)
       {        
         Console.WriteLine("huhuhuhu");
-        Thread.Sleep(500);
+        Thread.Sleep(500); 
       }
     }
   }
