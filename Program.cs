@@ -6,6 +6,7 @@ using RabbitMessaging;
 
 using System.Threading;
 using RabbitMQ.Client.Events;
+using Models;
 
 namespace RabbitMQArena
 {
@@ -18,6 +19,10 @@ namespace RabbitMQArena
     {
       try
       {
+        jsonMessageList jsonList = new jsonMessageList();
+        jsonList.iterateList();
+
+        return;
 
 
         _mBuilder = new MainBuilder();
