@@ -7,6 +7,8 @@ using RabbitMessaging;
 using System.Threading;
 using RabbitMQ.Client.Events;
 using Models;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace RabbitMQArena
 {
@@ -22,7 +24,9 @@ namespace RabbitMQArena
         jsonMessageList jsonList = new jsonMessageList();
         jsonList.iterateList();
 
-        return;
+        ShowBindings();
+
+        //return;
 
 
         _mBuilder = new MainBuilder();
@@ -129,6 +133,44 @@ namespace RabbitMQArena
       }
 
     }
+
+    private static void ShowBindings()
+    {
+
+          string queuesJson = GetFromApi($@"http://localhost:8080/api/exchanges/test/test_ex/bindings/source").Result;
+          JArray queuesJArray = JArray.Parse(queuesJson);
+
+
+          for (int i = 0; i < queuesJArray.Count; i++)
+
+          {
+
+                  Console.WriteLine(queuesJArray[i]);
+
+          }
+
+    }
+
+    private static async System.Threading.Tasks.Task<string> GetFromApi(string url)
+{
+      var byteArray = Encoding.ASCII.GetBytes("rabbit:rabbit");
+      using (HttpClient client = new HttpClient())
+      {
+                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+              var response = await client.GetAsync(url);
+              if (response.IsSuccessStatusCode)
+              {
+                    return response.Content.ReadAsStringAsync().Result;
+              }
+              else
+              {
+                    Console.WriteLine($"GetFromApi gibt Fehler zurueck! Message :{response.ReasonPhrase} ");
+                    return null;
+              }
+      }
+
+} 
 
     public static void SendToExchange(Object stateInfo)
     {
